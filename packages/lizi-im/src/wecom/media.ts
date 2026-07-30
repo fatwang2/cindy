@@ -4,6 +4,30 @@ import path from "node:path";
 
 const MAX_MEDIA_BYTES = 50 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const WINDOWS_RESERVED_FILENAME_STEMS = new Set([
+  "CON",
+  "PRN",
+  "AUX",
+  "NUL",
+  "COM1",
+  "COM2",
+  "COM3",
+  "COM4",
+  "COM5",
+  "COM6",
+  "COM7",
+  "COM8",
+  "COM9",
+  "LPT1",
+  "LPT2",
+  "LPT3",
+  "LPT4",
+  "LPT5",
+  "LPT6",
+  "LPT7",
+  "LPT8",
+  "LPT9",
+]);
 
 const MIME_BY_EXTENSION: Readonly<Record<string, string>> = {
   ".gif": "image/gif",
@@ -45,7 +69,13 @@ export function safeWecomFilename(
     end -= 1;
   }
   const base = sanitized.slice(0, end);
-  return base || `attachment${fallbackExtension}`;
+  if (!base) return `attachment${fallbackExtension}`;
+
+  const stemEnd = base.indexOf(".");
+  const stem = (stemEnd === -1 ? base : base.slice(0, stemEnd)).toUpperCase();
+  return WINDOWS_RESERVED_FILENAME_STEMS.has(stem)
+    ? `_${base}`.slice(0, 160)
+    : base;
 }
 
 export async function persistWecomDownload(args: {

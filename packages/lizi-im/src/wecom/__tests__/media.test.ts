@@ -29,6 +29,15 @@ describe("WeCom media helpers", () => {
     );
   });
 
+  it("prefixes Windows device names while preserving similar filenames", () => {
+    expect(safeWecomFilename("CON")).toBe("_CON");
+    expect(safeWecomFilename("nul.txt")).toBe("_nul.txt");
+    expect(safeWecomFilename("COM1.log")).toBe("_COM1.log");
+    expect(safeWecomFilename("LPT9.csv")).toBe("_LPT9.csv");
+    expect(safeWecomFilename("console.txt")).toBe("console.txt");
+    expect(safeWecomFilename("COM10.log")).toBe("COM10.log");
+  });
+
   it("persists a downloaded file below the channel directory", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "cindy-wecom-"));
     tempDirs.push(dir);
