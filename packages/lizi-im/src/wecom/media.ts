@@ -32,11 +32,19 @@ export function safeWecomFilename(
   filename: string | undefined,
   fallbackExtension = "",
 ): string {
-  const base = path
+  const sanitized = path
     .basename(filename?.trim() || `attachment${fallbackExtension}`)
     .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_")
-    .replace(/[. ]+$/g, "")
     .slice(0, 160);
+  let end = sanitized.length;
+  while (
+    end > 0 &&
+    (sanitized.charCodeAt(end - 1) === 0x2e ||
+      sanitized.charCodeAt(end - 1) === 0x20)
+  ) {
+    end -= 1;
+  }
+  const base = sanitized.slice(0, end);
   return base || `attachment${fallbackExtension}`;
 }
 

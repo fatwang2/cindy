@@ -24,6 +24,9 @@ afterEach(async () => {
 describe("WeCom media helpers", () => {
   it("removes path traversal and reserved filename characters", () => {
     expect(safeWecomFilename("../../bad:name?.png")).toBe("bad_name_.png");
+    expect(safeWecomFilename(`report${" ".repeat(20_000)}..`)).toBe(
+      "report",
+    );
   });
 
   it("persists a downloaded file below the channel directory", async () => {
