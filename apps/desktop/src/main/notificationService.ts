@@ -97,8 +97,8 @@ function buildBody(kind: SessionEventKind): string {
 }
 
 /**
- * 飞书私聊文案 — 单行纯文本(lark_md 渲染),保持极简,与桌面 toast 信息一致。
- * 标题 + 状态合并到一行,避免飞书消息列表里显得空荡。
+ * 外部通知通用文案 — 单行纯文本，保持极简并与桌面 toast 信息一致。
+ * 标题 + 状态合并到一行，适用于飞书私聊和企微群消息列表。
  */
 function buildExternalNotificationText(title: string, kind: SessionEventKind): string {
   const status = kind === 'needs-reply'

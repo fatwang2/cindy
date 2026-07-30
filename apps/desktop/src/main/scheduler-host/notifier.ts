@@ -121,7 +121,7 @@ export class DesktopNotifier implements Notifier {
 }
 
 /**
- * 把 ScheduleRun 渲染成飞书 lark_md 卡片文案。
+ * 把 ScheduleRun 渲染成外部通知通用文案。
  *
  * 视觉布局（从上到下）:
  *   1. 状态标题 — `<emoji> <schedule name>` 加粗,emoji 据 status 区分
@@ -129,9 +129,9 @@ export class DesktopNotifier implements Notifier {
  *   3. 元信息 — 时间 · 耗时 · agent · 工作目录(短)
  *
  * 格式约束:
- *   - 用 `**bold**`、列表、emoji,这些 lark_md(div tag) 都支持
- *   - URL 直接写,飞书自动识别成可点击链接
- *   - 不要带 `code` (cards.ts 里 stripInlineCode 会把 backtick 整对剥掉)
+ *   - 仅使用飞书与企微群消息共同支持的 Markdown 子集：`**bold**`、列表、emoji
+ *   - URL 直接写，由各渠道按自身能力识别
+ *   - 不使用行内 code，避免渠道渲染与清洗规则产生差异
  */
 function renderExternalMessage(schedule: Schedule, run: ScheduleRun): string {
   const lines: string[] = [`${statusEmoji(run.status)} **${schedule.name}**`];
