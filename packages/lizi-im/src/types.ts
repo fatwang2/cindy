@@ -60,6 +60,8 @@ export interface IMHost {
     discordMediaDir?: string;
     /** Root for downloaded telegram media. Optional — only hosts that wire the telegram channel provide it. */
     telegramMediaDir?: string;
+    /** Root for downloaded WeCom files and videos. */
+    wecomMediaDir?: string;
   };
 
   /**
@@ -85,7 +87,7 @@ export interface IMHost {
 export interface IMHostMediaCache {
   /** 图片字节入 host 总仓;返回仓内绝对路径(喂 agent)+ 渲染 URL(cindy-media://)。 */
   cacheImage(params: {
-    integration: 'feishu' | 'discord' | 'telegram';
+    integration: 'feishu' | 'discord' | 'telegram' | 'wecom';
     /** 平台侧稳定 token(feishu image_key / discord attachment id / telegram file_id),host 据此免重下。 */
     token: string;
     buffer: Uint8Array;
@@ -93,7 +95,7 @@ export interface IMHostMediaCache {
   }): Promise<{ absPath: string; url: string }>;
   /** 按 token 查已缓存图片;未缓存返回 null(调用方去真下载)。 */
   getCachedImage(
-    integration: 'feishu' | 'discord' | 'telegram',
+    integration: 'feishu' | 'discord' | 'telegram' | 'wecom',
     token: string,
   ): Promise<{ absPath: string; url: string; mimeType: string } | null>;
   /** host 托管媒体 URL(cindy-media://)→ 绝对路径;认不出返回 null(出站上传用)。 */

@@ -5,7 +5,11 @@
  * 静默改写；非 thread 渠道通过 `/new` 显式应用。
  */
 
-import { connectedProvidersForAgent, getModel, isAgentSelectableModel } from '@cindy/model-providers';
+import {
+  connectedProvidersForAgent,
+  getModel,
+  isAgentSelectableModel,
+} from '@cindy/model-providers';
 import { MessageSquare } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +34,7 @@ import {
   type ImDefaultSettingsState,
   isImDefaultEffort,
   isImDefaultPermissionMode,
-  isWechatUnsupportedPermissionMode,
+  isRemoteImUnsupportedPermissionMode,
 } from '../../../shared/imDefaultSettings';
 import { DefaultOverrideControls } from './DefaultOverrideControls';
 import { buildAgentSettingsPatch, mergeSettingsPatch } from './imDefaultSettingsLogic';
@@ -62,6 +66,8 @@ export function ImDefaultSettingsSection({
   onSummaryChange?: (summary: ImDefaultSettingsSummary | null) => void;
 }) {
   const { t } = useTranslation();
+  const remotePermissionKey =
+    channel === 'wechat' ? 'settings.wechatBot.permission' : 'settings.imBot.remotePermission';
   const { providers } = useProviders();
   const cc = useAgentCapabilities('claude-code');
   const codex = useAgentCapabilities('codex');
@@ -99,7 +105,9 @@ export function ImDefaultSettingsSection({
     // 准入口径:IM 默认模型是「从零挑一个」的清单,停用的供应商/模型与能力模型
     // 不该可选 —— 否则 headless runner 派发时才降级换模型,用户无感(PR #744 review)。
     const fromProviders = {
-      'claude-code': deriveModelsFromProviders(providers, 'claude-code', { admissionFiltered: true }),
+      'claude-code': deriveModelsFromProviders(providers, 'claude-code', {
+        admissionFiltered: true,
+      }),
       codex: deriveModelsFromProviders(providers, 'codex', { admissionFiltered: true }),
     };
     return {
@@ -228,7 +236,7 @@ export function ImDefaultSettingsSection({
   const changePermissionMode = (permissionMode: string) => {
     if (
       !isImDefaultPermissionMode(permissionMode) ||
-      isWechatUnsupportedPermissionMode(permissionMode) ||
+      isRemoteImUnsupportedPermissionMode(channel, permissionMode) ||
       permissionMode === settings.permissionMode
     ) {
       return;
@@ -329,10 +337,10 @@ export function ImDefaultSettingsSection({
         </div>
       </div>
 
-      {channel === 'wechat' && (
+      {(channel === 'wechat' || channel === 'wecom') && (
         <div className="flex flex-col gap-2">
           <span className="text-[12px] font-medium text-[var(--text-secondary)]">
-            {t('settings.wechatBot.permission.label')}
+            {t(`${remotePermissionKey}.label`)}
           </span>
           <PermissionSelector
             permissionMode={settings.permissionMode}
@@ -340,14 +348,14 @@ export function ImDefaultSettingsSection({
             vendorKey={vendorKeyFor(settings.agentKind)}
             disabled={pending}
             triggerVariant="field"
-            ariaContext={t('settings.wechatBot.permission.label')}
+            ariaContext={t(`${remotePermissionKey}.label`)}
             disabledModes={{
-              bypassPermissions: t('settings.wechatBot.permission.fullAccessDisabled'),
-              acceptEdits: t('settings.wechatBot.permission.permissionModeDisabled'),
+              bypassPermissions: t(`${remotePermissionKey}.fullAccessDisabled`),
+              acceptEdits: t(`${remotePermissionKey}.permissionModeDisabled`),
             }}
           />
           <p className="text-[12px] leading-[1.5] text-[var(--settings-section-desc)]">
-            {t('settings.wechatBot.permission.hint')}
+            {t(`${remotePermissionKey}.hint`)}
           </p>
         </div>
       )}

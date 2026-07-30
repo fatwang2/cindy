@@ -110,6 +110,7 @@ describe('automation-generated sessions', () => {
       'telegram',
       'discord',
       'wechat',
+      'wecom',
       'scheduler',
       'learn',
       'shared',
@@ -126,6 +127,7 @@ describe('automation-generated sessions', () => {
     expect(normalizeSessionSource('feishu')).toBe('feishu');
     expect(normalizeSessionSource('telegram')).toBe('telegram');
     expect(normalizeSessionSource('discord')).toBe('discord');
+    expect(normalizeSessionSource('wecom')).toBe('wecom');
     expect(normalizeSessionSource('plugin')).toBe('plugin');
     expect(normalizeSessionSource(null)).toBe('desktop');
     expect(normalizeSessionSource('unknown')).toBe('desktop');

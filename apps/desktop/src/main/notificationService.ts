@@ -32,6 +32,7 @@ import { getMobileNotifyGeneration, sendMobileSessionNotify } from './device-lin
 import { latestMessageText } from './localDb/latestMessageText';
 import { drainPersistQueue } from './messagePersistBroadcaster';
 import { createLogger } from './logger';
+import type { WecomGroupNotificationPublisher } from './wecomGroupNotification';
 
 const log = createLogger('notificationService');
 let desktopNotificationsEnabled = true;
@@ -75,7 +76,7 @@ interface ShowSessionEventPayload {
    * mobile 通道没有桌面侧开关:是否收到由手机端自行注册/注销推送 token 决定,
    * 发送侧的防打扰(远程正在看该会话 / 短窗去重)在 device-link 模块内收口。
    */
-  channels?: { desktop?: boolean; feishu?: boolean; mobile?: boolean };
+  channels?: { desktop?: boolean; feishu?: boolean; wecomGroup?: boolean; mobile?: boolean };
 }
 
 /**
@@ -99,7 +100,7 @@ function buildBody(kind: SessionEventKind): string {
  * 飞书私聊文案 — 单行纯文本(lark_md 渲染),保持极简,与桌面 toast 信息一致。
  * 标题 + 状态合并到一行,避免飞书消息列表里显得空荡。
  */
-function buildFeishuText(title: string, kind: SessionEventKind): string {
+function buildExternalNotificationText(title: string, kind: SessionEventKind): string {
   const status = kind === 'needs-reply'
     ? '需要你回复'
     : kind === 'error'
@@ -158,10 +159,11 @@ export interface NotificationServiceDeps {
    * (main/im 模块单例),保证 owner openId 与卡片回执等行为一致。
    */
   feishuIm: FeishuIM;
+  wecomGroupPublisher?: WecomGroupNotificationPublisher;
 }
 
 export function initNotificationService(deps: NotificationServiceDeps): void {
-  const { getWindow, feishuIm } = deps;
+  const { getWindow, feishuIm, wecomGroupPublisher } = deps;
 
   ipcMain.handle('notification:set-desktop-enabled', (_event, enabled: unknown) => {
     if (typeof enabled !== 'boolean') {
@@ -186,6 +188,7 @@ export function initNotificationService(deps: NotificationServiceDeps): void {
       // channels 缺省/未传 → 默认仅桌面 (防御漏传,见 ShowSessionEventPayload 注释)。
       const wantDesktop = channels?.desktop ?? true;
       const wantFeishu = channels?.feishu === true;
+      const wantWecomGroup = channels?.wecomGroup === true;
 
       if (wantDesktop) {
         showDesktopSessionEvent(getWindow, { sessionId, title: safeTitle, kind });
@@ -228,6 +231,15 @@ export function initNotificationService(deps: NotificationServiceDeps): void {
 
       if (wantFeishu) {
         await sendFeishuMessage(feishuIm, safeTitle, kind);
+      }
+      if (wantWecomGroup && wecomGroupPublisher) {
+        try {
+          await wecomGroupPublisher.publishMarkdown(buildExternalNotificationText(safeTitle, kind));
+        } catch (err) {
+          log.warn('[notification] WeCom group notification failed (non-fatal)', {
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
       }
     },
   );
@@ -309,7 +321,7 @@ async function sendFeishuMessage(
     return;
   }
   try {
-    await feishuIm.sendMarkdownText(ownerOpenId, buildFeishuText(safeTitle, kind));
+    await feishuIm.sendMarkdownText(ownerOpenId, buildExternalNotificationText(safeTitle, kind));
   } catch (err) {
     // 飞书 SDK 包了一层 axios; 400 等业务错误的真正 message 在 response.data 里,
     // 显式拆出来 log。与 scheduler-host/notifier.ts 的 catch 写法对齐。

@@ -5,6 +5,7 @@ export const SESSION_SOURCES = [
   'telegram',
   'discord',
   'wechat',
+  'wecom',
   'scheduler',
   'learn',
   'shared',
@@ -31,6 +32,7 @@ export const DESKTOP_VISIBLE_SESSION_SOURCES: SessionSource[] = [
   'telegram',
   'discord',
   'wechat',
+  'wecom',
   'scheduler',
   'learn',
   'shared',
@@ -43,6 +45,7 @@ export function normalizeSessionSource(source: unknown): SessionSource {
     source === 'telegram' ||
     source === 'discord' ||
     source === 'wechat' ||
+    source === 'wecom' ||
     source === 'scheduler' ||
     source === 'learn' ||
     source === 'shared' ||

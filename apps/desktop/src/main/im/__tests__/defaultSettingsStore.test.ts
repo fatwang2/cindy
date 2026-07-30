@@ -220,13 +220,18 @@ describe('im default settings store', () => {
     expect(migrated.channels.wechat.agentKind).toBe(IM_DEFAULT_SETTINGS.agentKind);
   });
 
-  it.each(['acceptEdits', 'bypassPermissions'] as const)(
-    'rejects %s for personal WeChat without changing saved defaults',
-    (permissionMode) => {
+  it.each([
+    ['wechat', 'acceptEdits', 'WECHAT_PERMISSION_MODE_UNSUPPORTED'],
+    ['wechat', 'bypassPermissions', 'WECHAT_PERMISSION_MODE_UNSUPPORTED'],
+    ['wecom', 'acceptEdits', 'WECOM_PERMISSION_MODE_UNSUPPORTED'],
+    ['wecom', 'bypassPermissions', 'WECOM_PERMISSION_MODE_UNSUPPORTED'],
+  ] as const)(
+    'rejects %s/%s for remote IM without changing saved defaults',
+    (channel, permissionMode, errorCode) => {
       expect(() =>
-        writeImDefaultSettingsPatch({ permissionMode }, 'wechat'),
-      ).toThrow('WECHAT_PERMISSION_MODE_UNSUPPORTED');
-      expect(readImDefaultSettings('wechat').permissionMode).toBe('auto');
+        writeImDefaultSettingsPatch({ permissionMode }, channel),
+      ).toThrow(errorCode);
+      expect(readImDefaultSettings(channel).permissionMode).toBe('auto');
     },
   );
 

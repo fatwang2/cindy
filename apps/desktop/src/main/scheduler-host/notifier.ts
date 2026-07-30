@@ -19,6 +19,7 @@ import type { Logger } from '@cindy/maker-scheduler';
 import { stripTrailingPathSeparators } from '../../shared/pathText';
 import { showDesktopSessionEvent } from '../notificationService';
 import { getMobileNotifyGeneration, sendMobileSessionNotify } from '../device-link';
+import type { WecomGroupNotificationPublisher } from '../wecomGroupNotification';
 
 export interface DesktopNotifierDeps {
   getMainWindow: () => BrowserWindow | null;
@@ -26,6 +27,7 @@ export interface DesktopNotifierDeps {
   logger: Logger;
   /** Global desktop preference and Agent Island arbitration, evaluated at send time. */
   shouldNotifyDesktop: () => boolean;
+  wecomGroupPublisher?: WecomGroupNotificationPublisher;
 }
 
 export class DesktopNotifier implements Notifier {
@@ -49,11 +51,21 @@ export class DesktopNotifier implements Notifier {
         this.deps.logger.warn?.('feishu notify failed', err);
       }
     }
+    if (schedule.notify.wecomGroup && this.deps.wecomGroupPublisher) {
+      try {
+        await this.deps.wecomGroupPublisher.publishMarkdown(renderExternalMessage(schedule, run));
+      } catch (err) {
+        this.deps.logger.warn?.('WeCom group notify failed', err);
+      }
+    }
     // 手机推送随 schedule 的通知意愿走:desktop / feishu 全关表示用户不想被这个
     // 调度打扰,mobile 不得绕过(schedule 级暂无独立 mobile 开关,任一通道开启即
     // 视为允许提醒);是否真的收到仍由手机端注册 token 决定,发送侧防打扰在
     // device-link 模块收口,失败静默。
-    if (run.sessionId && (schedule.notify.desktop || schedule.notify.feishu)) {
+    if (
+      run.sessionId &&
+      (schedule.notify.desktop || schedule.notify.feishu || schedule.notify.wecomGroup)
+    ) {
       try {
         // 正文带运行结果摘要(与飞书卡片同源素材):成功给 resultText,失败给
         // errorMsg;缺省回退终态短文案。截断由 mobileNotify 按协议上限统一处理。
@@ -92,7 +104,7 @@ export class DesktopNotifier implements Notifier {
       );
       return;
     }
-    const text = renderFeishuMessage(schedule, run);
+    const text = renderExternalMessage(schedule, run);
     try {
       await this.deps.feishuIm.sendMarkdownText(ownerOpenId, text);
     } catch (err) {
@@ -121,7 +133,7 @@ export class DesktopNotifier implements Notifier {
  *   - URL 直接写,飞书自动识别成可点击链接
  *   - 不要带 `code` (cards.ts 里 stripInlineCode 会把 backtick 整对剥掉)
  */
-function renderFeishuMessage(schedule: Schedule, run: ScheduleRun): string {
+function renderExternalMessage(schedule: Schedule, run: ScheduleRun): string {
   const lines: string[] = [`${statusEmoji(run.status)} **${schedule.name}**`];
 
   if (run.status === 'failed' && run.errorMsg) {

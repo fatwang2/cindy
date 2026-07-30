@@ -56,6 +56,7 @@ import { useAttachedSessionIds } from '@/hooks/useAttachedSessionIds';
 import { useActiveMainView } from '@/hooks/useActiveMainView';
 import { getNotificationsEnabled } from '@/hooks/useNotificationSettings';
 import { getFeishuNotificationsEnabled } from '@/hooks/useFeishuNotificationSettings';
+import { getWecomGroupNotificationsEnabled } from '@/hooks/useWecomGroupNotificationSettings';
 import { getAgentIslandEnabled, isAgentIslandSupported } from '@/hooks/useAgentIslandSettings';
 import type { Session } from '@/lib/ccAgent.types';
 import {
@@ -791,6 +792,7 @@ function ExpandedView({
     const islandActive = isAgentIslandSupported() && getAgentIslandEnabled();
     const desktopEnabled = getNotificationsEnabled() && !islandActive;
     const feishuEnabled = getFeishuNotificationsEnabled();
+    const wecomGroupEnabled = getWecomGroupNotificationsEnabled();
     // 失焦才推 —— 见上注释。
     if (typeof document !== 'undefined' && document.hasFocus()) return;
     const session = sessionsRef.current.find((s) => s.id === sessionId);
@@ -810,7 +812,12 @@ function ExpandedView({
       sessionId,
       title,
       kind,
-      channels: { desktop: desktopEnabled, feishu: feishuEnabled, mobile: true },
+      channels: {
+        desktop: desktopEnabled,
+        feishu: feishuEnabled,
+        wecomGroup: wecomGroupEnabled,
+        mobile: true,
+      },
     });
   }, []);
   const handleSessionDone = useCallback(

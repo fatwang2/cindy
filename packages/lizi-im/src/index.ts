@@ -43,6 +43,13 @@ export { TelegramIM, createTelegramIM } from './telegram/index.js';
 export type { TelegramIMOptions, TelegramGroupWindowEntry } from './telegram/index.js';
 export { TELEGRAM_DEFAULT_BEHAVIOR } from './telegram/index.js';
 export type { TelegramBehaviorConfig } from './telegram/index.js';
+export { WecomIM, createWecomIM } from './wecom/index.js';
+export type { WecomIMOptions } from './wecom/index.js';
+export {
+  decodeWecomLane,
+  encodeWecomGroupLane,
+  chunkWecomMarkdown,
+} from './wecom/codec.js';
 export {
   decodeLaneUserId as decodeTelegramLaneUserId,
   encodeLaneUserId as encodeTelegramLaneUserId,

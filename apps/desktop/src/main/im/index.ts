@@ -59,11 +59,20 @@ import { and, eq, like, ne, sql } from 'drizzle-orm';
 
 import { getDbClient } from '../localDb/client/current';
 import { sessions } from '../localDb/schema';
-import { im, feishuIm, discordIm, telegramIm, wechatCompatibilityPolicy, wechatIm } from './host';
+import {
+  im,
+  feishuIm,
+  discordIm,
+  telegramIm,
+  wechatCompatibilityPolicy,
+  wechatIm,
+  wecomIm,
+} from './host';
 import { wireFeishuOrchestrator, type FeishuOrchestratorConfig } from './feishu';
 import { wireDiscordOrchestrator } from './discord';
 import { wireTelegramOrchestrator } from './telegram';
 import { wireWechatOrchestrator } from './wechat';
+import { wireWecomOrchestrator } from './wecom';
 import { resetTelegramGroupContextCursors } from './telegram/groupWindow';
 import { getImOrchestrator, listImOrchestrators } from './shared/orchestrator';
 import { createSerializedConnectionLifecycle } from './connectionLifecycle';
@@ -89,7 +98,15 @@ import {
   writeWechatWorkingDir,
 } from './wechat/channelSettings';
 
-export { registerTelegramBotConfigIpc, im, feishuIm, discordIm, telegramIm, wechatIm } from './host';
+export {
+  registerTelegramBotConfigIpc,
+  im,
+  feishuIm,
+  discordIm,
+  telegramIm,
+  wechatIm,
+  wecomIm,
+} from './host';
 
 const log = createLogger('main:im');
 
@@ -165,6 +182,13 @@ const WECHAT_CONFIG: ImOrchestratorConfig = {
   effortOverrides: IM_DEFAULT_EFFORT_OVERRIDES,
 };
 
+const WECOM_CONFIG: ImOrchestratorConfig = {
+  agentKind: IM_DEFAULT_SETTINGS.agentKind,
+  defaultModel: IM_DEFAULT_SETTINGS.agents[IM_DEFAULT_SETTINGS.agentKind].model,
+  defaultPermissionMode: IM_DEFAULT_SETTINGS.permissionMode,
+  effortOverrides: IM_DEFAULT_EFFORT_OVERRIDES,
+};
+
 export function startImOrchestrators(): void {
   wechatCompatibilityPolicy.start();
   if (wired) return;
@@ -184,6 +208,7 @@ export function startImOrchestrators(): void {
   wireDiscordOrchestrator(discordIm, DISCORD_CONFIG);
   wireTelegramOrchestrator(telegramIm, TELEGRAM_CONFIG);
   wireWechatOrchestrator(wechatIm, WECHAT_CONFIG);
+  wireWecomOrchestrator(wecomIm, WECOM_CONFIG);
 
   ipcMain.handle('wechatBot:get-state', (event) => {
     assertTrustedAppRendererEvent(event);

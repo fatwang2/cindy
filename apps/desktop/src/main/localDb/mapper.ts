@@ -555,6 +555,7 @@ export function scheduleToCamel(row: ScheduleRow): Schedule {
     notify: {
       desktop: !!row.notifyDesktop,
       feishu: !!row.notifyFeishu,
+      ...(row.notifyWecomGroup ? { wecomGroup: true } : {}),
     },
     status: row.status as ScheduleStatus,
     createdAt: row.createdAt,
@@ -599,6 +600,7 @@ export function scheduleCreateToRow(s: Schedule): ScheduleInsert {
     preRunHookTimeoutMs: s.preRunHook?.timeoutMs ?? null,
     notifyDesktop: s.notify.desktop,
     notifyFeishu: s.notify.feishu,
+    notifyWecomGroup: s.notify.wecomGroup === true,
     status: s.status,
     createdAt: s.createdAt,
     updatedAt: s.updatedAt,
@@ -655,9 +657,10 @@ export function schedulePatchToRow(patch: Partial<Schedule>): Partial<ScheduleIn
   }
   if (hasKey(patch, 'notify')) {
     // 嵌套对象整体替换：必须两列同时写
-    const n = patch.notify ?? { desktop: false, feishu: false };
+    const n = patch.notify ?? { desktop: false, feishu: false, wecomGroup: false };
     out.notifyDesktop = !!n.desktop;
     out.notifyFeishu = !!n.feishu;
+    out.notifyWecomGroup = !!n.wecomGroup;
   }
   if (hasKey(patch, 'status')) out.status = patch.status as ScheduleStatus;
   if (hasKey(patch, 'createdAt')) out.createdAt = patch.createdAt as number;

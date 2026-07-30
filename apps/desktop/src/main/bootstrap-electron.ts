@@ -268,6 +268,10 @@ import { reapClaudeOrphansSync } from './claude-orphan-reaper';
 import { startAgentProcessPriorityWatcher } from './agent-process-priority';
 import { initAppBadgeService, clearAllSessionAttention } from './appBadgeService';
 import { initNotificationService } from './notificationService';
+import {
+  initWecomGroupNotificationIpc,
+  wecomGroupNotificationService,
+} from './wecomGroupNotification';
 import { getAgentIslandService, initAgentIslandService } from './agent-island/service.js';
 import {
   isAppContentWindow,
@@ -539,7 +543,7 @@ import {
   isImDefaultEffort,
   isImDefaultPermissionMode,
   isImDefaultSettingsChannel,
-  isWechatUnsupportedPermissionMode,
+  isRemoteImUnsupportedPermissionMode,
   type ImDefaultAgentKind,
   type ImDefaultAgentSettings,
   type ImDefaultSettingsChannel,
@@ -2498,7 +2502,9 @@ const registerIpcHandlers = () => {
   initNotificationService({
     getWindow: () => getWindow() ?? null,
     feishuIm,
+    wecomGroupPublisher: wecomGroupNotificationService,
   });
+  initWecomGroupNotificationIpc();
   initAgentIslandService({
     getMainWindow: () => getWindow() ?? null,
     isPlannedRemoteDaemonClose: isCcMgrUpgradeInFlight,
@@ -2616,8 +2622,8 @@ const registerIpcHandlers = () => {
     async (_e, patch: unknown, rawChannel: unknown) => {
       const channel = parseImDefaultSettingsChannel(rawChannel);
       const parsedPatch = parseImDefaultSettingsPatch(patch);
-      if (channel === 'wechat' && isWechatUnsupportedPermissionMode(parsedPatch.permissionMode)) {
-        throwIpcError('INVALID_PARAMS', 'personal WeChat does not support this permission mode');
+      if (isRemoteImUnsupportedPermissionMode(channel, parsedPatch.permissionMode)) {
+        throwIpcError('INVALID_PARAMS', 'remote IM channel does not support this permission mode');
       }
       writeImDefaultSettingsPatch(parsedPatch, channel);
       return imDefaultSettingsWire(channel);
