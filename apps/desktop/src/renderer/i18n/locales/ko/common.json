@@ -1906,6 +1906,49 @@
         }
       }
     },
+    "dingtalkBot": {
+      "title": "DingTalk 봇",
+      "description": "직접 만든 DingTalk 봇을 연결하고 Stream 모드로 DM과 그룹에서 {{appName}}를 사용합니다.",
+      "status": {
+        "needsConfig": "설정 필요",
+        "connecting": "연결 중…",
+        "connected": "연결됨",
+        "error": "연결 실패"
+      },
+      "connected": {
+        "heading": "DingTalk 봇 연결됨",
+        "ownerBound": "소유자가 연결되었습니다. DM을 보내거나 그룹에서 멘션해 시작하세요.",
+        "waitingOwner": "먼저 봇에게 DM을 보내세요. 첫 번째 발신자가 소유자로 안전하게 연결됩니다.",
+        "ownerLabel": "소유자 사용자 ID",
+        "notBound": "첫 DM 대기 중"
+      },
+      "appKeyLabel": "Client ID",
+      "appKeyPlaceholder": "봇 애플리케이션의 Client ID 붙여넣기",
+      "appSecretLabel": "Client Secret",
+      "appSecretPlaceholder": "봇 애플리케이션의 Client Secret 붙여넣기",
+      "appSecretSavedPlaceholder": "안전하게 저장됨. 비워 두고 다시 연결할 수 있습니다",
+      "showSecret": "Client Secret 표시",
+      "hideSecret": "Client Secret 숨기기",
+      "formHint": "자격 증명은 로컬에 암호화됩니다. 연결 후 첫 DM으로 소유자를 연결합니다.",
+      "errorHint": "연결 실패. 자격 증명, Stream 모드, 네트워크를 확인한 후 다시 시도하세요.",
+      "connect": "연결",
+      "reconnect": "다시 연결",
+      "disconnect": "연동 해제",
+      "disconnectConfirm": {
+        "title": "DingTalk 봇 연동을 해제하시겠습니까?",
+        "description": "연결을 끊고 저장된 Client ID, Client Secret, 소유자 연결을 삭제합니다.",
+        "confirm": "연동 해제",
+        "cancel": "취소"
+      },
+      "guide": {
+        "title": "설정 가이드",
+        "step1": "DingTalk 개발자 포털에서 내부 앱을 만들고 봇 기능을 추가합니다.",
+        "step2": "봇의 Stream 모드를 활성화하고 앱 버전을 게시합니다.",
+        "step3": "앱 자격 증명에서 Client ID와 Client Secret을 복사해 입력합니다.",
+        "step4": "연결 후 봇에게 먼저 DM을 보내 소유자를 연결합니다. 그룹에서는 멘션하세요.",
+        "openPortal": "DingTalk 개발자 포털 열기 ↗"
+      }
+    },
     "logout": {
       "button": "로그아웃",
       "aria": "로그아웃"
@@ -2605,7 +2648,7 @@
       "tips": {
         "cindy": "Cindy는 공식 제공 공유 봇입니다. 자격 증명을 신청할 필요 없이 Slack을 연결하고 @Cindy를 멘션하면 바로 작업을 맡길 수 있습니다.",
         "personal": "개인 연결에는 WeChat 스캔 인증과 직접 발급한 Feishu / Discord / Telegram 인증 정보 연결이 포함됩니다. 새 대화 설정은 채널별로 저장됩니다.",
-        "personalFeishuOnly": "개인 연결에는 WeChat 스캔 인증과 직접 발급한 Feishu 인증 정보 연결이 포함됩니다. 새 대화 설정은 채널별로 저장됩니다."
+        "personalFeishuOnly": "개인 연결에는 WeChat 스캔 인증과 직접 발급한 Feishu 및 DingTalk 자격 증명 연결이 포함됩니다. 새 대화 설정은 채널별로 저장됩니다."
       },
       "defaults": {
         "title": "새 대화 설정",
@@ -7517,7 +7560,11 @@
       "telegramBotConnectFailed": "Telegram 봇 연결 실패. Token과 네트워크를 확인하세요",
       "telegramBotSaveFailed": "저장 실패: {{message}}",
       "telegramBotDisconnected": "Telegram 봇 연동이 해제됨",
-      "telegramBotDisconnectFailed": "연동 해제 실패: {{message}}"
+      "telegramBotDisconnectFailed": "연동 해제 실패: {{message}}",
+      "dingtalkBotConnected": "DingTalk 봇이 연결됨",
+      "dingtalkBotConnectFailed": "DingTalk 봇 연결 실패. 자격 증명, Stream 모드, 네트워크를 확인하세요",
+      "dingtalkBotDisconnected": "DingTalk 봇 연동이 해제됨",
+      "dingtalkBotDisconnectFailed": "DingTalk 봇 연동 해제 실패"
     },
     "errors": {
       "openFileFailed": "시스템에서 파일을 열 수 없습니다",
@@ -7542,7 +7589,8 @@
       "discordOwnerUserIdFormat": "Discord 사용자 ID는 17-20자리 숫자여야 합니다",
       "telegramFieldsRequired": "Bot Token과 Telegram 사용자 ID 둘 다 입력해야 합니다",
       "telegramTokenFormat": "Token 형식이 잘못되었습니다. BotFather가 생성한 \"숫자:시크릿\" 형태여야 합니다",
-      "telegramOwnerUserIdFormat": "Telegram 사용자 ID는 숫자여야 합니다"
+      "telegramOwnerUserIdFormat": "Telegram 사용자 ID는 숫자여야 합니다",
+      "dingtalkFieldsRequired": "Client ID와 Client Secret을 모두 입력해야 합니다"
     },
     "confirm": {
       "logoutTitle": "로그아웃",

@@ -16,6 +16,7 @@ import { app, ipcMain, BrowserWindow, net, shell } from 'electron';
 import {
   createIM,
   createDiscordIM,
+  createDingTalkIM,
   createFeishuIM,
   createTelegramIM,
   type IMHost,
@@ -164,6 +165,9 @@ export const telegramIm = createTelegramIM(host, {
     }),
   ),
 });
+export const dingtalkIm = createDingTalkIM(host, {
+  fetcher: (input, init) => net.fetch(input instanceof URL ? input.toString() : input, init),
+});
 /**
  * Telegram 个人 bot 的行为/人格/群参与配置 IPC(设置卡数据通道)。
  * 必须由 bootstrap 显式调用(与 im.registerIpc() 同期) — 不能放模块顶层:
@@ -266,4 +270,4 @@ wechatCompatibilityPolicy.subscribe((decision) => {
     log.warn('failed to apply personal WeChat compatibility policy');
   });
 });
-export const im = createIM([feishuIm, discordIm, wechatIm, telegramIm]);
+export const im = createIM([feishuIm, discordIm, wechatIm, telegramIm, dingtalkIm]);

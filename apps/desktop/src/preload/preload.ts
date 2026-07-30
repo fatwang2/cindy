@@ -385,6 +385,8 @@ const fanOutFeishuBotRegistrationStatus = createIpcFanOut('feishuBot:registratio
 const fanOutDiscordBotStatusChange = createIpcFanOut('discordBot:status-change');
 // 个人 Telegram Bot：本机凭证模式(BotFather token 直连);同上只暴露 transport 状态。
 const fanOutTelegramBotStatusChange = createIpcFanOut('telegramBot:status-change');
+const fanOutDingTalkBotStatusChange = createIpcFanOut('dingtalkBot:status-change');
+const fanOutDingTalkBotOwnerChange = createIpcFanOut('dingtalkBot:owner-change');
 // Personal WeChat: main owns auth/polling and broadcasts a credential-free state snapshot.
 const fanOutWechatBotStateChange = createIpcFanOut('wechatBot:state-changed');
 const fanOutVoiceInputEvent = createIpcFanOut('voice-input:event');
@@ -1583,6 +1585,50 @@ contextBridge.exposeInMainWorld('electronAPI', {
       mode: 'mention' | 'always';
     }): Promise<unknown> => ipcRenderer.invoke('telegramBot:set-group-activation', payload),
     onStatusChange: fanOutTelegramBotStatusChange,
+  },
+
+  // ── Personal DingTalk Bot (Settings → IM Bot → Personal) ──
+  // Client Secret is only forwarded into main-process encrypted storage and is never returned.
+  dingtalkBot: {
+    getState: (): Promise<{
+      status:
+        | { kind: 'idle' }
+        | { kind: 'connecting' }
+        | { kind: 'connected'; appId: string }
+        | { kind: 'conflict'; appId: string }
+        | { kind: 'error'; reason: string };
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }> => ipcRenderer.invoke('dingtalkBot:get-state'),
+    save: (payload: {
+      appKey: string;
+      appSecret: string;
+    }): Promise<{
+      status:
+        | { kind: 'idle' }
+        | { kind: 'connecting' }
+        | { kind: 'connected'; appId: string }
+        | { kind: 'conflict'; appId: string }
+        | { kind: 'error'; reason: string };
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }> => ipcRenderer.invoke('dingtalkBot:save', payload),
+    reconnect: (): Promise<{
+      status:
+        | { kind: 'idle' }
+        | { kind: 'connecting' }
+        | { kind: 'connected'; appId: string }
+        | { kind: 'conflict'; appId: string }
+        | { kind: 'error'; reason: string };
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }> => ipcRenderer.invoke('dingtalkBot:reconnect'),
+    clear: (): Promise<{ ok: true }> => ipcRenderer.invoke('dingtalkBot:clear'),
+    onStatusChange: fanOutDingTalkBotStatusChange,
+    onOwnerChange: fanOutDingTalkBotOwnerChange,
   },
 
   // ── Personal WeChat (Settings → IM Bot → Personal) ──

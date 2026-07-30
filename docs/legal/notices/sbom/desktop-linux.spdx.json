@@ -3,9 +3,9 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "cindy-desktop-linux",
-  "documentNamespace": "https://cindy.app/spdx/desktop-linux/464bff7eabf005aa01e25a654671aa5dede2568cb57ada4e9a58a912d0b71fbf",
+  "documentNamespace": "https://cindy.app/spdx/desktop-linux/aa9dab315f6cbc5dfeac6c7d763d4e8e22d682effd62828cdf2aa788bea7a768",
   "creationInfo": {
-    "created": "2026-07-27T21:02:23Z",
+    "created": "2026-07-29T09:30:58Z",
     "creators": [
       "Tool: scripts/generate-third-party-notices.mjs"
     ]
@@ -5833,6 +5833,23 @@
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
           "referenceLocator": "pkg:npm/dijkstrajs@1.0.3"
+        }
+      ]
+    },
+    {
+      "name": "dingtalk-stream",
+      "SPDXID": "SPDXRef-Package-90f04b6ed7221e7d",
+      "versionInfo": "v2.1.5",
+      "downloadLocation": "https://github.com/open-dingtalk/dingtalk-stream-sdk-nodejs",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/dingtalk-stream@v2.1.5"
         }
       ]
     },
@@ -15176,6 +15193,11 @@
       "spdxElementId": "SPDXRef-DOCUMENT",
       "relationshipType": "DESCRIBES",
       "relatedSpdxElement": "SPDXRef-Package-ea564ccce08c858a"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-90f04b6ed7221e7d"
     },
     {
       "spdxElementId": "SPDXRef-DOCUMENT",

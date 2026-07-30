@@ -411,6 +411,8 @@ type TelegramBotTransportStatus =
   | { kind: 'conflict'; appId: string }
   | { kind: 'error'; reason: string };
 
+type DingTalkBotTransportStatus = DiscordBotTransportStatus;
+
 type WechatBotPhase =
   | 'disconnected'
   | 'authorizing'
@@ -1766,6 +1768,33 @@ interface ElectronAPI {
         botUsername: string | null;
       }) => void,
     ) => () => void;
+  };
+
+  // ── Personal DingTalk Bot (Settings → IM Bot → Personal) ──
+  dingtalkBot: {
+    getState: () => Promise<{
+      status: DingTalkBotTransportStatus;
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }>;
+    save: (payload: { appKey: string; appSecret: string }) => Promise<{
+      status: DingTalkBotTransportStatus;
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }>;
+    reconnect: () => Promise<{
+      status: DingTalkBotTransportStatus;
+      appKey: string | null;
+      hasSecret: boolean;
+      ownerUserId: string | null;
+    }>;
+    clear: () => Promise<{ ok: true }>;
+    onStatusChange: (
+      callback: (update: { status: DingTalkBotTransportStatus }) => void,
+    ) => () => void;
+    onOwnerChange: (callback: (update: { ownerUserId: string }) => void) => () => void;
   };
 
   // ── Personal WeChat (Settings → IM Bot → Personal) ──

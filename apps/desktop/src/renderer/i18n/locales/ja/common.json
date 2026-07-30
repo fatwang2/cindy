@@ -1906,6 +1906,49 @@
         }
       }
     },
+    "dingtalkBot": {
+      "title": "DingTalk ボット",
+      "description": "自作の DingTalk ボットを接続し、Stream モードで DM やグループから {{appName}} を利用します。",
+      "status": {
+        "needsConfig": "設定が必要",
+        "connecting": "接続中…",
+        "connected": "接続済み",
+        "error": "接続失敗"
+      },
+      "connected": {
+        "heading": "DingTalk ボットに接続済み",
+        "ownerBound": "オーナーを連携済みです。DM またはグループでメンションして開始できます。",
+        "waitingOwner": "まずボットに DM してください。最初の送信者がオーナーとして安全に連携されます。",
+        "ownerLabel": "オーナーのユーザー ID",
+        "notBound": "最初の DM を待機中"
+      },
+      "appKeyLabel": "Client ID",
+      "appKeyPlaceholder": "ボットアプリの Client ID を貼り付け",
+      "appSecretLabel": "Client Secret",
+      "appSecretPlaceholder": "ボットアプリの Client Secret を貼り付け",
+      "appSecretSavedPlaceholder": "安全に保存済み。空欄のまま再接続できます",
+      "showSecret": "Client Secret を表示",
+      "hideSecret": "Client Secret を隠す",
+      "formHint": "認証情報はローカルで暗号化されます。接続後、最初の DM でオーナーを連携します。",
+      "errorHint": "接続できません。認証情報、Stream モード、ネットワークを確認して再試行してください。",
+      "connect": "接続",
+      "reconnect": "再接続",
+      "disconnect": "連携解除",
+      "disconnectConfirm": {
+        "title": "DingTalk ボットの連携を解除しますか？",
+        "description": "接続を切断し、保存済みの Client ID、Client Secret、オーナー連携を削除します。",
+        "confirm": "連携解除",
+        "cancel": "キャンセル"
+      },
+      "guide": {
+        "title": "設定ガイド",
+        "step1": "DingTalk 開発者ポータルで社内アプリを作成し、ボット機能を追加します。",
+        "step2": "ボットの Stream モードを有効にし、アプリのバージョンを公開します。",
+        "step3": "アプリ認証情報から Client ID と Client Secret をコピーして入力します。",
+        "step4": "接続後、最初にボットへ DM してオーナーを連携します。グループではメンションしてください。",
+        "openPortal": "DingTalk 開発者ポータルを開く ↗"
+      }
+    },
     "logout": {
       "button": "ログアウト",
       "aria": "ログアウト"
@@ -2605,7 +2648,7 @@
       "tips": {
         "cindy": "Cindy は公式提供の共有ボットです。認証情報の申請は不要で、Slack を連携して @Cindy にメンションするだけでタスクを任せられます。",
         "personal": "個人接続には WeChat のスキャン認証と、自分の Feishu / Discord / Telegram 認証情報を使用する接続があります。新規会話設定はチャネルごとに保存されます。",
-        "personalFeishuOnly": "個人接続には WeChat のスキャン認証と、自分の Feishu 認証情報を使用する接続があります。新規会話設定はチャネルごとに保存されます。"
+        "personalFeishuOnly": "個人接続には WeChat のスキャン認証と、自分の Feishu / DingTalk 認証情報を使用する接続があります。新規会話設定はチャネルごとに保存されます。"
       },
       "defaults": {
         "title": "新規会話設定",
@@ -7517,7 +7560,11 @@
       "telegramBotConnectFailed": "Telegram ボットの接続に失敗しました。Token とネットワークを確認してください",
       "telegramBotSaveFailed": "保存に失敗しました：{{message}}",
       "telegramBotDisconnected": "Telegram ボットの連携を解除しました",
-      "telegramBotDisconnectFailed": "連携解除に失敗しました：{{message}}"
+      "telegramBotDisconnectFailed": "連携解除に失敗しました：{{message}}",
+      "dingtalkBotConnected": "DingTalk ボットに接続しました",
+      "dingtalkBotConnectFailed": "DingTalk ボットに接続できません。認証情報、Stream モード、ネットワークを確認してください",
+      "dingtalkBotDisconnected": "DingTalk ボットの連携を解除しました",
+      "dingtalkBotDisconnectFailed": "DingTalk ボットの連携解除に失敗しました"
     },
     "errors": {
       "openFileFailed": "システムでファイルを開けません",
@@ -7542,7 +7589,8 @@
       "discordOwnerUserIdFormat": "Discord ユーザー ID は 17-20 桁の数字である必要があります",
       "telegramFieldsRequired": "Bot Token と Telegram ユーザー ID の両方を入力してください",
       "telegramTokenFormat": "Token の形式が不正です。BotFather が生成する「数字:シークレット」の形にしてください",
-      "telegramOwnerUserIdFormat": "Telegram ユーザー ID は数字である必要があります"
+      "telegramOwnerUserIdFormat": "Telegram ユーザー ID は数字である必要があります",
+      "dingtalkFieldsRequired": "Client ID と Client Secret の両方を入力してください"
     },
     "confirm": {
       "logoutTitle": "ログアウト",
