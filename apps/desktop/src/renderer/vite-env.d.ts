@@ -1684,8 +1684,9 @@ interface ElectronAPI {
       ownerOpenId: string | null;
       error?: string;
       lifecycleAnnouncement: boolean;
+      service: 'feishu' | 'lark';
     }>;
-    save: (payload: { appId: string; appSecret: string }) => Promise<{
+    save: (payload: { appId: string; appSecret: string; service: 'feishu' | 'lark' }) => Promise<{
       verdict: 'connected' | 'conflict' | 'error' | 'pending';
     }>;
     reconnect: () => Promise<{
@@ -1693,7 +1694,7 @@ interface ElectronAPI {
     }>;
     clear: () => Promise<{ ok: true }>;
     setLifecycleAnnouncement: (enabled: boolean) => Promise<{ ok: true }>;
-    registrationBegin: () => Promise<FeishuBotRegistrationBeginResult>;
+    registrationBegin: (service: 'feishu' | 'lark') => Promise<FeishuBotRegistrationBeginResult>;
     registrationCancel: () => Promise<{ ok: true }>;
     onStatusChange: (
       callback: (update: {
