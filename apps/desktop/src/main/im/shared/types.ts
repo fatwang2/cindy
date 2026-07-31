@@ -183,6 +183,11 @@ export interface ImUiTextPack {
      */
     start?: string;
     unknownCommand: (cmd: string) => string;
+    /**
+     * Text-only channels use this when a slash command requires interactive
+     * cards. Missing copy falls back to unknownCommand.
+     */
+    interactiveCommandUnsupported?: (cmd: string) => string;
     detachedBySlash: string;
     detachedByRevoke: string;
     notAttached: string;
